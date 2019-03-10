@@ -2,6 +2,9 @@
 
 
 from tkinter import *
+##from tkinter.filedialog import askdirectory
+##from tkinter.filedialog import askopenfilename
+from tkinter import filedialog
 
 
 
@@ -39,17 +42,30 @@ if __name__ == "__main__":
         Setp0_Label1.grid(row = StartRow + 1,column = StartCol + 0,columnspan = ColumnSpanNbr,sticky = W)
 
         #Step1:
+        step1_selectfilename = StringVar()
+        def Step1_Button1_function():
+            step1_filename=filedialog.askopenfilename()
+            step1_selectfilename.set(step1_filename)
+            print("filedialog.askopenfilename",end=":  ")
+            print(step1_selectfilename.get())
+            Step1_Entry0_String.set(step1_selectfilename.get())
+        
         StartRow = 2
         StartCol = 0
         Step1_Label0 = Label(root,text = "Step1:    选择待处理文件。")
         Step1_Label0.grid(row = StartRow + 0,column = StartCol + 0,columnspan = ColumnSpanNbr,sticky = W)
-        Step1_Label1 = Label(root,text = "        请在下面的输入待处理文件完整文件名。")
+        Step1_Label1 = Label(root,text = "        请在下面的输入待处理文件完整文件名。                    (或者使用按键选择文件)")
         Step1_Label1.grid(row = StartRow + 1,column = StartCol + 0,columnspan = ColumnSpanNbr,sticky = W)
 
+        
         Step1_Entry0_String = StringVar()
         Step1_Entry0 = Entry(root,width = 100,textvariable = Step1_Entry0_String)
         Step1_Entry0_String.set(DefaultInputFileName)
         Step1_Entry0.grid(row = StartRow + 2,column = StartCol + 1,columnspan = ColumnSpanNbr,sticky = W)
+        
+        Step1_Button1_OpenFileName = Button(root,text = "选择文件",command = Step1_Button1_function)
+        Step1_Button1_OpenFileName.grid(row = StartRow + 1,column = StartCol + 8,sticky = W)
+        
 
         #Step2:
         StartRow = 5
@@ -105,17 +121,29 @@ if __name__ == "__main__":
         Step3_Key1_Entry0.grid(row = StartRow + 2,column = StartCol + 1,columnspan = ColumnSpanNbr,sticky = W)
         
         #Step4:
+        step4_selectfilename = StringVar()
+        def Step4_Button1_function():
+            step4_filename=filedialog.askopenfilename()
+            step4_selectfilename.set(step4_filename)
+            print("filedialog.askopenfilename",end=":  ")
+            print(step4_selectfilename.get())
+            Step4_Entry0_String.set(step4_selectfilename.get())
+            
         StartRow = 16
         StartCol = 0
         Setp4_Label0 = Label(root,text = "Step4:    输出文件。")
         Setp4_Label0.grid(row = StartRow + 0,column = StartCol + 0,columnspan = ColumnSpanNbr,sticky = W)
-        Setp4_Label1 = Label(root,text = "        处理结果將保存到下面的文件里。")
+        
+        Setp4_Label1 = Label(root,text = "        处理结果將保存到下面的文件里。                               (或者使用按键选择文件)")
         Setp4_Label1.grid(row = StartRow + 1,column = StartCol + 0,columnspan = ColumnSpanNbr,sticky = W)
 
         Step4_Entry0_String = StringVar()
         Step4_Entry0 = Entry(root,width = 100,textvariable = Step4_Entry0_String)
         Step4_Entry0_String.set(DefaultOutputFileName)
         Step4_Entry0.grid(row = StartRow + 2,column = StartCol + 1,columnspan = ColumnSpanNbr,sticky = W)
+
+        Step4_Button_OpenFileName = Button(root,text = "选择文件",command = Step4_Button1_function)
+        Step4_Button_OpenFileName.grid(row = StartRow + 1,column = StartCol + 8,sticky = W)
 
         #Step5:
         StartRow = 19
@@ -125,7 +153,7 @@ if __name__ == "__main__":
         Step5_Label1 = Label(root,text = "        如果上面的操作都完成了，就可以点击运行按键启动处理过程了。")
         Step5_Label1.grid(row = StartRow + 1,column = 0,columnspan = ColumnSpanNbr,sticky = W)
 
-        def Step3_Button1_Function():
+        def Step5_Button1_Function():
             import os
             print("Run Step3_Button1_Function().")
             
@@ -186,7 +214,7 @@ if __name__ == "__main__":
                 OutputFileNameString = ""
                 if(RealOutputFileNameTmp == ""):
                     # if had not input outputfilename. auto created default fileanme.
-                    RealOutputFileName = InputFileNameString[0]+"___outputTemp"+InputFileNameString[1]
+                    RealOutputFileName = InputFileNameString[0]+"__out"+InputFileNameString[1]
                     RealOutputFileNameTmp = RealOutputFileName
                     Step4_Entry0_String.set(RealOutputFileNameTmp)
                     print(RealOutputFileName)
@@ -269,10 +297,11 @@ if __name__ == "__main__":
 
                 OutputFileNameString = os.path.splitext(RealOutputFileNameTmp)
                 print(OutputFileNameString)
+                
+                batfilename = OutputFileNameString[0]+".bat"
+                print(batfilename)
+                
                 try:
-                    
-                    batfilename = OutputFileNameString[0]+".bat"
-                    print(batfilename)
                     batfile = open(batfilename,"w")
                     print("debug1")
                     batfile.write(batcmdline)
@@ -287,19 +316,22 @@ if __name__ == "__main__":
                     Step6_Label2.insert(1.0,batcmdline)
                     print("debug6")
                     cmdout = os.popen(batfilename)
-                    #print("debug4")
+
+                    #cmdout = os.system(batfilename)
+                    
                     print(type(cmdout.read()))
                     print(cmdout.read())
+                    
                 except:
                     print("Creat batfile error")
                     pass
                 finally:
-                    
+                    os.remove(batfilename)
                     print("Step3_Button1_Function() end.\n")
                     pass
             #setup ok
             
-        Step5_Button1 = Button(root,text = "运行",width = 20,command = Step3_Button1_Function)
+        Step5_Button1 = Button(root,text = "运行",width = 20,command = Step5_Button1_Function)
         Step5_Button1.grid(row = StartRow + 2,column = 3,columnspan = 2,sticky = W)
 
 

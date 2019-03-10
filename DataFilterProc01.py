@@ -30,9 +30,13 @@ if __name__ == "__main__":
 
 ##        for i in range(argvnbr):
 ##                print(sys.argv[i])
-##                
+##
+        #print argument
         for i in range(len(sys.argv)):
                 print("Argument["+str(i)+"]: "+sys.argv[i])
+
+
+        # for argument from command line, check arguments.
         if(ArgumentsControlVariable == 0):
         
                 argvnbrtmp = 1
@@ -71,6 +75,8 @@ if __name__ == "__main__":
                                 pass
                 else:
                         pass
+
+        # if argument is success print arguments.
         if(ErrorFlag != 0):
                 print("ErrorFlag = "+str(ErrorFlag))
         else:
@@ -81,7 +87,7 @@ if __name__ == "__main__":
                 print(OutputFileName)
 
 
-        #process
+        #process if argument is success.
         if(ErrorFlag == 0):
         
                 try:
@@ -91,6 +97,8 @@ if __name__ == "__main__":
                         inputfile.close()
                         outputfile.close()
                         ErrorFlag = 21
+                        print("ErrorFlag = "+str(ErrorFlag))
+                        print("Error: open file error, maybe file path or file name is error. please check them.")
                         pass
                 finally:
                         
@@ -197,6 +205,8 @@ if __name__ == "__main__":
                         
                         linestr = inputfile.readline()
                         #outputfile.write(linestr)
+                        #print(linestr)
+                        #print(len(linestr))
                         print("Debug1:"+linestr)
                         linenew = op_key_str(OperatorFlag,KeyList,linestr)
                         if(linenew == None):
@@ -207,6 +217,8 @@ if __name__ == "__main__":
                         while(len(linestr) > 0):
                                 linestr = inputfile.readline()
                                 #outputfile.write(linestr)
+                                #print(linestr)
+                                #print(len(linestr))
                                 print("Debug1:"+linestr)
                                 linenew = op_key_str(OperatorFlag,KeyList,linestr)
                                 if(linenew == None):
@@ -221,6 +233,9 @@ if __name__ == "__main__":
                         print("ErrorFlag = "+str(ErrorFlag))
                         pass
         else:
+                #argument is error.
+                print("ErrorFlag = "+str(ErrorFlag))
+                print("Error: maybe argument is error,please check them.")
                 pass
 
         
