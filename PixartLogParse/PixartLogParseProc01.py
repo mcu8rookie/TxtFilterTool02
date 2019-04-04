@@ -1,6 +1,8 @@
+#coding=utf-8
 #PixartLogParseProc01.py
 
 import os
+import sys
 import xlrd
 import xlwt
 
@@ -42,14 +44,76 @@ Excel_State = 0
 global row_nbr
 row_nbr = 0
 
+
 RoutineControlVariable = 0.1
 RoutineControlDebug = 2
+
+StartUp_By_Cmd = 1
 
 Globel_Error_Code = 0
 
 if __name__ == '__main__':
     Excel_State = 0
     print("RoutineControlVariable = " + str(RoutineControlVariable))
+
+    if StartUp_By_Cmd == 1:
+        InputFileName = ""
+        OutputFileName = ""
+        PPG_Channel_nbr = 0
+        MEMS_Channel_nbr = 0
+        
+        for i in range(len(sys.argv)):
+            print("Parameter"+str(i),end=": ")
+            print(sys.argv[i])
+
+        ##检查參數数量。
+        if len(sys.argv) < 9:
+            print("Abnormal:parameter is less than expect")
+            Globel_Error_Code = 1
+
+        
+        ##检查參數符号。
+        if str(sys.argv[1]) != "-c" or str(sys.argv[3]) != "-g" or str(sys.argv[5]) != "-i" or str(sys.argv[7]) != "-o":
+            print("Abnormal:some parameter error,parameter1/3/5/7 -> -c/-g/-i/-o")
+            Globel_Error_Code = 1
+        ##检查參數设置。
+        if int(sys.argv[2])<1 or int(sys.argv[2])>5 or int(sys.argv[4])<1 or int(sys.argv[4])>4:
+            print("Abnormal:some parameter error,")
+            Globel_Error_Code = 1
+        else:
+            PPG_Channel_nbr = int(sys.argv[2])
+            MEMS_Channel_nbr = int(sys.argv[4])
+            
+        if os.path.isfile(sys.argv[6]) == True:
+            print("Normal:Input is a file.")
+            InputFileName = sys.argv[6]
+            pass
+        else:
+            print("Abnormal:Input is not a file.")
+            Globel_Error_Code = 2
+        if os.path.isdir(sys.argv[8]) == True:
+            print("Normal:Output is a path.")
+            
+            pass
+        else:
+            if os.path.exists(sys.argv[8]) == True:
+                print("Normal:Output path is exist.")
+            else:
+                print("Normal:Output path is not exist,now create it.")
+                os.makedirs(sys.argv[8])
+            pass
+        OutputFileName = sys.argv[8]+"/tmp_out.xls"
+        if Globel_Error_Code == 0:
+            pass
+        else:
+            print("Globel_Error_Code = "+str(Globel_Error_Code))
+            sys.exit(0)
+        pass
+    else:
+        pass
+
+    ##print("sys.exit(0)")
+    ##sys.exit(0)
 
     #check inputfile
 

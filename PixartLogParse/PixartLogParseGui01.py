@@ -1,7 +1,7 @@
 #PixartLogParse:
 
+import os
 from tkinter import *
-
 from tkinter import filedialog
 
 if 0:
@@ -161,8 +161,95 @@ if __name__ == "__main__":
     StartRow = StartRow + 3
     StartCol = StartCol + 0
     def Portion5_Button0_Function():
-        print("Button")
+        errorflag = 0
+        print("Run_Button:")
+        #CMD 
+##        DataFilterProc01.py
+##        -f 0
+##        -k a
+##        -i D:/PersonalFile/PyProjs/XinxingPythonCode/DataFilter/2019-3-1_14-00.txt
+##        -o D:/PersonalFile/PyProjs/XinxingPythonCode/DataFilter/2019-3-1_14-00__out.txt
+##        PixartLogParseProc01.py
+##        -c n
+##        -g m
+##        -i inputfile.txt
+##        -o outputfolder
+        
+        CmdLineString = ""
+        ParseScriptCmd = "PixartLogParseProc01.py"
+        Parameter_PPGChannel = "-c "+str(Portion2_RadioButtons_Group.get())
+        Parameter_GsensorRange = "-g "+str(Portion3_RadioButtons_Group.get())
+        Parameter_Input = "-i " + Portion1_Entry0_StringVar.get()
+        Parameter_Output = "-o " + Portion4_Entry0_StringVar.get()
+        #CmdLineString = ParseScriptCmd + " " +Parameter_PPGChannel + " " + Parameter_GsensorRange + " " + Parameter_Input + " " + Parameter_Output
+        
+        print(ParseScriptCmd)
+        print(Parameter_PPGChannel)
+        print(Parameter_GsensorRange)
+        print(Parameter_Input)
+        print(Parameter_Output)
+        print(CmdLineString)
 
+        if Portion2_RadioButtons_Group.get()<1 or Portion2_RadioButtons_Group.get()>5:
+            Portion6_Text0.delete(0.0,END)
+            Portion6_Text0.insert(0.0,"选择PPG数据通道异常")
+            errorflag = 1
+            
+        if Portion3_RadioButtons_Group.get()<1 or Portion3_RadioButtons_Group.get()>4:
+            Portion6_Text0.delete(0.0,END)
+            Portion6_Text0.insert(0.0,"选择Gsensor量程异常")
+            errorflag = 2
+            
+        infile = Portion1_Entry0_StringVar.get()
+        infilebasename = ""
+        if os.path.isdir(infile) == True:
+            Portion6_Text0.delete(0.0,END)
+            Portion6_Text0.insert(0.0,"输入文件异常,输入了路径吧")
+            errorflag = 3
+        elif os.path.isfile(infile) == True:
+            inputtuple = os.path.splitext(infile)
+            
+            print(type(inputtuple))
+            print(inputtuple)
+            print(type(inputtuple[1].upper()))
+            if inputtuple[1].lower() != ".txt" and inputtuple[1].lower() != ".log":
+                Portion6_Text0.delete(0.0,END)
+                Portion6_Text0.insert(0.0,"输入文件异常，文件类型错误吧")
+                errorflag = 4
+        else:
+            Portion6_Text0.delete(0.0,END)
+            Portion6_Text0.insert(0.0,"输入文件异常")
+            errorflag = 5
+
+        outfolder = Portion4_Entry0_StringVar.get()
+        outfile = ""
+        if os.path.isdir(outfolder) != True:
+            Portion6_Text0.delete(0.0,END)
+            Portion6_Text0.insert(0.0,"输出路径异常，不是正确的路径吧")
+            errorflag = 6
+            pass
+        else:
+            tmp = ""
+            tmp = os.path.basename(Portion1_Entry0_StringVar.get())
+            print(tmp)
+            print(tmp[:tmp.find(".")])
+            outfile = outfolder + "/"+ tmp[:tmp.find(".")]
+            print(outfile)
+            
+        
+        if errorflag == 0:
+            print()
+            ##print(CmdLineString)
+            CmdLineString = ParseScriptCmd + " " +Parameter_PPGChannel + " " + Parameter_GsensorRange + " " + Parameter_Input + " " + "-o" + " " + outfile
+
+            Portion6_Text0.delete(0.0,END)
+            Portion6_Text0.insert(0.0,CmdLineString)
+                                             
+            os.system(CmdLineString)
+            
+            pass
+        else:
+            pass
     Portion5_Label0 = Label(root,text = "Portion_5:        运行。")
     Portion5_Label0.grid(row = StartRow + 0,column = StartCol + 0,columnspan = ColumnSpanNbr,sticky = W)
     Portion5_Label1 = Label(root,text = "（如果上面的设置都正确，则可以运行处理数据了。）")
